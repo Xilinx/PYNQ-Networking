@@ -30,3 +30,5 @@
 *.bin binary -crlf
 *.bit binary -crlf
 *.a binary -crlf
+*.so binary -crlf
+*.ko binary -crlf
