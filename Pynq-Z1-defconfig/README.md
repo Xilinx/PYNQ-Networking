@@ -3,7 +3,8 @@
 The folder updates [the corresponding configuration folder on mainline 
 PYNQ repository](https://github.com/Xilinx/PYNQ/tree/master/sdbuild/boot_configs/Pynq-Z1-defconfig).
 
-Use the following command to build the boot files:
+In the `/sdbuild` folder of a PYNQ repository, use the following command to 
+build the boot files in Ubuntu:
 
 ```shell
 make boot_files
