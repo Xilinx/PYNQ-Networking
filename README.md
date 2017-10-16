@@ -6,6 +6,20 @@ implemented on this overlay, leveraging the `scapy` python library.
 
 ![](./block_diagram.jpg)
 
+## Getting Started
+To try this project, use the following command in a terminal:
+
+```
+git clone --recursive https://github.com/Xilinx/PYNQ-Networking.git
+sudo -H pip3.6 install --upgrade https://github.com/Xilinx/PYNQ-Networking.git
+```
+
+After the setup, the notebook folder will be populated, and users can try
+the demo there. Users do not have to run any additional steps.
+
+For completeness, the following few sections introduces what have been done
+starting from a PYNQ image V2.0 SD card.
+
 ## Boot Files
 This overlay requires the boot files to be upgraded to Xilinx 2017.2 tool 
 suite. For example, the device tree must have the following patch:
@@ -75,7 +89,7 @@ of the mainline PYNQ repository. For example, `kernel.config` file enables the
 IP bridging functionality.
 
 ## Installing Packages
-There are several packages to be installed:
+There are several packages installed during the setup:
 
 ```shell
 apt-get install tcpdump iptables ebtables bridge-utils
@@ -83,17 +97,17 @@ pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt
 ```
 
 ## Modifying `eth0` Port
-Users have to modify the `eth0` port on Linux (`/etc/network/interfaces.d/eth0`).
+Users have to modify the `eth0` port on Linux 
+(`/etc/network/interfaces.d/eth0`). An example of the modified file is stored
+in `/interfaces.d` folder of this repository.
 
 *Note: again, make a backup of the old files if necessary.*
 
-The modified file looks like this:
-```shell
-auto eth0
-auto br0
-iface br0 inet dhcp
-bridge_ports eth0
+## Submodules
+There are submodules exploited in this project. So use
+
+```
+git clone --recursive https://github.com/Xilinx/PYNQ-Networking.git
 ```
 
-## Others
-To be added.
+to clone the repository.
