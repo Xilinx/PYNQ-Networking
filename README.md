@@ -11,7 +11,7 @@ To try this project, use the following command in a terminal:
 
 ```
 git clone --recursive https://github.com/Xilinx/PYNQ-Networking.git
-sudo -H pip3.6 install --upgrade https://github.com/Xilinx/PYNQ-Networking.git
+sudo -H pip3.6 install --upgrade ./PYNQ-Networking
 ```
 
 After the setup, the notebook folder will be populated, and users can try
