@@ -104,6 +104,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'install':
     build_submodules("org.eclipse.mosquitto.rsmb")
     build_submodules("mqtt-sn-tools")
     run_make("org.eclipse.mosquitto.rsmb/rsmb/src/", "broker_mqtts")
+    run_make("slurper/", "slurper.so")
     fill_notebooks()
     print("Please reboot the board to finish the setup.")
 
