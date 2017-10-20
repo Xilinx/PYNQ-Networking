@@ -89,7 +89,7 @@ of the mainline PYNQ repository. For example, `kernel.config` file enables the
 IP bridging functionality.
 
 The Linux kernel is compiled using the following configuration 
-(`Pynq-Z1-defconfig/config`):
+(`Pynq-Z1-defconfig/config`, based on Xilinx Linux kernel 2017.2 release):
 ```
 LINUX_REPO ?= https://github.com/Xilinx/linux-xlnx.git
 LINUX_COMMIT ?= 5d029fdc257cf88e65500db348eda23040af332b
