@@ -77,16 +77,25 @@ suite. For example, the device tree must have the following patch:
 The ethernet entry must have bridging enabled as above.
 
 Files in the boot partition compatible to 2017.2 tool suite are in 
-`/boot_files`. Users can replace the files in the boot partition of a PYNQ
+`boot_files`. Users can replace the files in the boot partition of a PYNQ
 image.
 
 *Note: make a backup of the old files if necessary before replacing files!*
 
 The source files to generate those boot files, are in 
-`/Pynq-Z1-defconfig`; 
-this folder has several patches for the folder of the same name in `/sdbuild`
+`Pynq-Z1-defconfig`; 
+this folder has several patches for the folder of the same name in `sdbuild`
 of the mainline PYNQ repository. For example, `kernel.config` file enables the 
 IP bridging functionality.
+
+The Linux kernel is compiled using the following configuration 
+(`Pynq-Z1-defconfig/config`):
+```
+LINUX_REPO ?= https://github.com/Xilinx/linux-xlnx.git
+LINUX_COMMIT ?= 5d029fdc257cf88e65500db348eda23040af332b
+```
+Note that the object file `kernel_module/pynqenet.ko` also has
+to be compiled against this Linux kernel source.
 
 ## Installing Packages
 There are several packages installed during the setup:
@@ -99,7 +108,7 @@ pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt
 ## Modifying `eth0` Port
 Users have to modify the `eth0` port on Linux 
 (`/etc/network/interfaces.d/eth0`). An example of the modified file is stored
-in `/interfaces.d` folder of this repository.
+in `interfaces.d` folder of this repository.
 
 *Note: again, make a backup of the old files if necessary.*
 
