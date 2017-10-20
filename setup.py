@@ -75,13 +75,6 @@ def update_interfaces():
     shutil.copy2('interfaces.d/eth0', eth0_file)
 
 
-# Notebook delivery
-def fill_notebooks():
-    src_nb_dir = 'notebooks/'
-    dst_nb_dir = '/home/xilinx/jupyter_notebooks/'
-    shutil.copytree(src_nb_dir, dst_nb_dir)
-
-
 # Build submodules
 def build_submodules(submodule_path):
     if os.path.exists(submodule_path + '/.git'):
@@ -97,6 +90,24 @@ def run_make(src_path, output_lib):
         sys.exit(1)
 
 
+# Notebook delivery
+def fill_notebooks():
+    src_nb = 'notebooks/*'
+    dst_nb_dir = '/home/xilinx/jupyter_notebooks/networking'
+    subprocess.check_call(['cp', '-rf', src_nb, dst_nb_dir])
+
+    if os.path.exists(new_nb_dir):
+        for folder in ['/kernel_module', '/broker_client']:
+            subprocess.check_call(['cp', '-rf', folder, dst_nb_dir])
+
+
+# Move overlay
+def fill_overlay():
+    src_overlay = 'overlays/*'
+    dst_overlay_dir = '/home/xilinx/pynq/overlays/'
+    subprocess.check_call(['cp', '-rf', src_overlay, dst_overlay_dir])
+
+
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
     update_boot()
     install_packages()
@@ -104,9 +115,10 @@ if len(sys.argv) > 1 and sys.argv[1] == 'install':
     build_submodules("org.eclipse.mosquitto.rsmb")
     build_submodules("mqtt-sn-tools")
     run_make("org.eclipse.mosquitto.rsmb/rsmb/src/", "broker_mqtts")
-    run_make("slurper/", "slurper.so")
+    run_make("broker_client/", "packet_slurper.o")
     fill_notebooks()
     print("Please reboot the board to finish the setup.")
+
 
 setup(name='pynq_networking',
       version='2.0',
