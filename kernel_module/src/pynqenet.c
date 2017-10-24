@@ -58,8 +58,9 @@ static irqreturn_t pynqenet_rx_th(int irq, void *data)
 
 static void pynqenet_rx_recv(struct net_device *dev, void *buf, int len)
 {
-    int err;
+    // struct pynqenet_adapter *adapter = netdev_priv(dev);
     struct sk_buff *skb;
+    int err;
 
     skb = netdev_alloc_skb(dev, len + 2);
     if (unlikely(!skb)) {
@@ -72,6 +73,16 @@ static void pynqenet_rx_recv(struct net_device *dev, void *buf, int len)
     skb_reserve(skb, 2);
     memcpy(skb_put(skb, len), buf, len);
 
+    // /* TODO: here for debugging */
+    // printk(KERN_DEBUG "pynqenet: rx_packet\n");
+    // packet_hexdump(buf, len);
+
+    /* NOTE: forward directly to some other adapter interface */
+    /*  skb->dev = adapter->fwd_dev;
+     *  skb->priority = 0;
+     *  if (likely(dev_queue_xmit(skb) == NET_XMIT_SUCCESS)) {
+     */
+    /* NOTE: pass along to the linux kernel */
     skb->protocol = eth_type_trans(skb, dev);
     if (likely(netif_receive_skb(skb) == NET_RX_SUCCESS)) {
         dev->stats.rx_packets++;
@@ -194,6 +205,15 @@ static int pynqenet_open(struct net_device *dev)
         goto err_rx_chan_alloc;
     }
 
+    // /* get access to foward interface */
+    // err = -ENODEV;
+    // adapter->fwd_dev = dev_get_by_name(&init_net, "eth0");
+    // if (adapter->fwd_dev == NULL) {
+    //     netdev_err(dev, "FWD DEV(%s) could not be found\n", "eth0");
+    //     goto err_fwd_dev;
+    // }
+    // netdev_info(dev, "fwd iface:%s MAC:%pM\n", "eth0", adapter->fwd_dev->dev_addr);
+
     /* reset the DMA */
     err = -EINVAL;
     xlnx_dma_reset(adapter->tx_chan);
@@ -221,6 +241,8 @@ static int pynqenet_open(struct net_device *dev)
     return 0;
 
 err_chan_status:
+//     dev_put(adapter->fwd_dev);
+// err_fwd_dev:
     xlnx_dma_chan_cleanup(adapter->rx_chan, &pynqenet_s2mm_config);
 err_rx_chan_alloc:
     xlnx_dma_chan_cleanup(adapter->tx_chan, &pynqenet_mm2s_config);
@@ -234,6 +256,7 @@ static int pynqenet_stop(struct net_device *dev)
     struct pynqenet_adapter *adapter = netdev_priv(dev);
 
     printk(KERN_DEBUG "pynqenet_stop\n");
+    // dev_put(adapter->fwd_dev);
     xlnx_dma_chan_cleanup(adapter->rx_chan, &pynqenet_s2mm_config);
     xlnx_dma_chan_cleanup(adapter->tx_chan, &pynqenet_mm2s_config);
     napi_disable(&adapter->napi);
@@ -257,6 +280,9 @@ static netdev_tx_t pynqenet_xmit(struct sk_buff *skb, struct net_device *dev)
         len = ETH_ZLEN;
         data = shortpkt;
     }
+
+    // printk(KERN_DEBUG "pynqenet: tx_packet\n");
+    // packet_hexdump(data, len);
 
     /* send the packet to the PL */
     err = xlnx_dma_chan_send_packet(adapter->tx_chan, data, len);
@@ -316,11 +342,11 @@ static void pynqenet_ether_setup(struct net_device *dev)
     dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
 
     dev->features   |= NETIF_F_SG;
-    //dev->features |= NETIF_F_SG | NETIF_F_FRAGLIST
-    //    | NETIF_F_TSO
-    //    | NETIF_F_HW_CSUM
-    //    | NETIF_F_HIGHDMA
-    //    | NETIF_F_LLTX;
+    // dev->features |= NETIF_F_SG | NETIF_F_FRAGLIST
+    //     | NETIF_F_TSO
+    //     | NETIF_F_HW_CSUM
+    //     | NETIF_F_HIGHDMA
+    //     | NETIF_F_LLTX;
 
     /* assign a random MAC address */
     eth_hw_addr_random(dev);
@@ -404,7 +430,6 @@ static int pynqenet_probe(struct pynqenet_device *pdev)
     /* FIXME: check the the device is actually there? */
 
     /* register network device */
-    //spin_lock_init(&adapter->stats_lock);
     netif_napi_add(ndev, &adapter->napi, pynqenet_napi_poll, NAPI_POLL_WEIGHT);
     err = register_netdev(ndev);
     if (err)
@@ -447,11 +472,11 @@ static void pynqenet_remove(struct pynqenet_device *pdev)
  **/
 static unsigned pynq_dma_base = PYNQ_SG_DMA_BASE;
 module_param(pynq_dma_base, hex32, S_IRUGO);
-//MODULE_PARAM_DESC(pynq_dma_base, "base AXI address for the SG DMA Controller");
+// MODULE_PARAM_DESC(pynq_dma_base, "base AXI address for the SG DMA Controller");
 
 static unsigned pynq_dma_len = PYNQ_SG_DMA_LEN;
 module_param(pynq_dma_len, hex32, S_IRUGO);
-//MODULE_PARAM_DESC(pynq_dma_len, "AXI region size for the SG DMA Controller");
+// MODULE_PARAM_DESC(pynq_dma_len, "AXI region size for the SG DMA Controller");
 
 static struct pynqenet_device pynq_dev;
 static int __exit pynqenet_init(void)

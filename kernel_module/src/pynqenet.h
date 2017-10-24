@@ -25,8 +25,8 @@ struct pynqenet_device {
 struct pynqenet_adapter {
     struct pynqenet_device *pdev;
     struct net_device *ndev;
+    // struct net_device *fwd_dev;
     struct xlnx_dma_device *dma_dev;
-    //spinlock_t stats_lock;
 
     /* TX */
     struct xlnx_dma_chan *tx_chan;

@@ -448,24 +448,40 @@ int xlnx_dma_chan_send_packet(struct xlnx_dma_chan *chan, void *buf, size_t len)
     struct xlnx_dma_bd *bd;
     int indx, next;
     dma_addr_t indxptr;
+    unsigned long flags;
 
     /* make sure the channel is for sending too the DMA */
     if (chan->direction != DMA_MEM_TO_DEV) {
         return -EINVAL;
     }
+
+    /* FIXME: cleanup current block descriptors now */
+    spin_lock_irqsave(&(chan->lock), flags);
+    indx = chan->bd_curr;
+    next = xlnx_dma_bd_next(chan, indx);
+    while ((chan->bd_pool[indx]->status & SG_BD_CMPL) && (next != chan->bd_tail)) {
+        indx = next;
+        next = xlnx_dma_bd_next(chan, indx);
+        // printk(KERN_INFO "xlnx_dma: curr descriptor done: %d\n", indx);
+    }
+    chan->bd_curr = indx;
+    spin_unlock_irqrestore(&(chan->lock), flags);
+    /* FIXME: end */
+
     /* make sure the data can fit within an ethernet frame */
     if (len > ETH_FRAME_LEN) {
         return -ENOMEM;
     }
     /* make sure we have enough buffer space to send the packet */
+    spin_lock_irqsave(&(chan->lock), flags);
     indx = chan->bd_tail;
     next = xlnx_dma_bd_next(chan, indx);
     if (next == chan->bd_curr) {
-        printk(KERN_INFO "xlnx_dma: drop packet because buffer is full\n");
+        // printk(KERN_INFO "xlnx_dma: drop packet because buffer is full\n");
+        spin_unlock_irqrestore(&(chan->lock), flags);
         return -ENOMEM;
     }
 
-    /* FIXME: should this be protected by a spinlock? */
     bd = chan->bd_pool[indx];
     xlnx_dma_scrub_bd(bd, len | SG_BD_SOP_EOP);
     memcpy(chan->bd_kaddr[indx], buf, len);
@@ -473,6 +489,7 @@ int xlnx_dma_chan_send_packet(struct xlnx_dma_chan *chan, void *buf, size_t len)
     indxptr = xlnx_dma_bd_addr(chan, indx);
     xlnx_dma_taildesc(chan, indxptr);
     chan->bd_tail = next;
+    spin_unlock_irqrestore(&(chan->lock), flags);
 
     return len;
 }
