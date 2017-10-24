@@ -33,7 +33,6 @@ import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 from .pynqsocket import L2PynqSocket
-from .broker import get_ip_string, get_mac_string
 from .broker import ip_str_to_int, mac_str_to_int, int_2_ip_str
 from .mqttsn_sw import *
 from .accelerator import Accelerator
@@ -44,8 +43,8 @@ __copyright__ = "Copyright 2017, Xilinx"
 __email__ = "stephenn@xilinx.com"
 
 
-LOCAL_IP_STR = get_ip_string()
-LOCAL_MAC_STR = get_mac_string()
+LOCAL_IP_STR = '192.168.1.104'
+LOCAL_MAC_STR = '8a:70:bd:29:2b:40'
 conf.L2PynqSocket = L2PynqSocket
 
 
@@ -106,7 +105,7 @@ class MQTT_Client_PL:
             If non-zero, get verbose debugging feedback about the connection.
 
         """
-        if server_ip is int:
+        if type(server_ip) is int:
             self.server_ip_int = server_ip
             self.server_ip_str = int_2_ip_str(server_ip)
         else:
@@ -115,9 +114,9 @@ class MQTT_Client_PL:
         self.server_port = server_port
         self.client = client_name
         self.verbose = verbose
-        self.local_ip_str = get_ip_string()
+        self.local_ip_str = LOCAL_IP_STR
         self.local_ip_int = ip_str_to_int(self.local_ip_str)
-        self.local_mac_str = get_mac_string()
+        self.local_mac_str = LOCAL_MAC_STR
         self.local_mac_int = mac_str_to_int(self.local_mac_str)
         self.frame = None
 

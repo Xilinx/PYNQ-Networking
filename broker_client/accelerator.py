@@ -152,11 +152,11 @@ class Accelerator:
             The temperature sensor object.
 
         """
-        pl_ip = pl_ip_address if pl_ip_address is int \
+        pl_ip = pl_ip_address if type(pl_ip_address) is int \
             else ip_str_to_int(pl_ip_address)
-        pl_mac = pl_mac_address if pl_mac_address is int \
+        pl_mac = pl_mac_address if type(pl_mac_address) is int \
             else mac_str_to_int(pl_mac_address)
-        server_ip = server_ip_address if server_ip_address is int \
+        server_ip = server_ip_address if type(server_ip_address) is int \
             else ip_str_to_int(server_ip_address)
 
         mac_address_arg = self.ffi.cast("unsigned long long", pl_mac)
@@ -203,11 +203,11 @@ class Accelerator:
             The temperature sensor object.
 
         """
-        pl_ip = pl_ip_address if pl_ip_address is int \
+        pl_ip = pl_ip_address if type(pl_ip_address) is int \
             else ip_str_to_int(pl_ip_address)
-        pl_mac = pl_mac_address if pl_mac_address is int \
+        pl_mac = pl_mac_address if type(pl_mac_address) is int \
             else mac_str_to_int(pl_mac_address)
-        server_ip = server_ip_address if server_ip_address is int \
+        server_ip = server_ip_address if type(server_ip_address) is int \
             else ip_str_to_int(server_ip_address)
 
         _ = self.map(net_iop.mmio)
