@@ -10,8 +10,7 @@ implemented on this overlay, leveraging the `scapy` python library.
 To try this project, use the following command in a terminal:
 
 ```
-git clone --recursive https://github.com/Xilinx/PYNQ-Networking.git
-sudo -H pip3.6 install --upgrade ./PYNQ-Networking
+sudo pip3.6 install --upgrade git+https://github.com/Xilinx/PYNQ-Networking.git
 ```
 
 After the setup, the notebook folder will be populated, and users can try

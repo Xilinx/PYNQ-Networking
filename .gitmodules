@@ -1,6 +1,6 @@
 [submodule "mqtt-sn-tools"]
 	path = mqtt-sn-tools
 	url = https://github.com/njh/mqtt-sn-tools.git
-[submodule "org.eclipse.mosquitto.rsmb"]
-	path = org.eclipse.mosquitto.rsmb
+[submodule "rsmb"]
+	path = rsmb
 	url = https://github.com/MichalFoksa/rsmb.git
