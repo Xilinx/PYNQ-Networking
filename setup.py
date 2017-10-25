@@ -128,7 +128,6 @@ if len(sys.argv) > 1 and sys.argv[1] == 'install':
     run_make("rsmb/rsmb/src/", "broker_mqtts")
     fill_notebooks()
     fill_overlay()
-    print("Please reboot the board to finish the setup.")
 
 
 setup(name='pynq_networking',
