@@ -77,7 +77,7 @@ def install_packages():
 # Update interfaces
 def update_interfaces():
     eth0_file = '/etc/network/interfaces.d/eth0'
-    backup_file = '.{}'.format(
+    backup_file = '/etc/network/interfaces.d/.{}'.format(
         datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     shutil.copy2(eth0_file, backup_file)
     shutil.copy2(GIT_DIR + '/interfaces.d/eth0', eth0_file)
@@ -104,6 +104,8 @@ def run_make(src_path, output_lib):
 def fill_notebooks():
     src_nb = GIT_DIR + '/notebooks'
     dst_nb_dir = '/home/xilinx/jupyter_notebooks/networking'
+    if os.path.exists(dst_nb_dir):
+        shutil.rmtree(dst_nb_dir)
     shutil.copytree(src_nb, dst_nb_dir)
 
     for folder in ['/kernel_module', '/broker_client']:
