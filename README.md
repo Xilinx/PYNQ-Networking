@@ -112,11 +112,13 @@ in `interfaces.d` folder of this repository.
 
 *Note: again, make a backup of the old files if necessary.*
 
-## Submodules
-There are submodules exploited in this project. So use
+## Wily Release
+For Wily release of the Ubuntu system (15.10), please make sure the file
+`/etc/apt/sources.list.d/multistrap-wily.list` looks like the following:
 
 ```
-git clone --recursive https://github.com/Xilinx/PYNQ-Networking.git
+deb [arch=armhf] http://old-releases.ubuntu.com/ubuntu wily universe main
+deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
 ```
 
-to clone the repository.
+And run `apt-get update` before installing any package.
