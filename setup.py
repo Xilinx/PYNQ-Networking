@@ -46,10 +46,7 @@ def update_boot():
     boot_mount = '/mnt/boot'
     if not os.path.exists('/mnt/boot'):
         subprocess.check_call(['mkdir', boot_mount])
-        try:
-            subprocess.check_call(['mount', '/dev/mmcblk0p1', boot_mount])
-        finally:
-            subprocess.check_call(['umount', '/dev/mmcblk0p1'])
+    subprocess.check_call(['mount', '/dev/mmcblk0p1', boot_mount])
 
     backup_folder = boot_mount + '/BOOT_PARTITION_{}'.format(
         datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
@@ -62,6 +59,8 @@ def update_boot():
     for file in boot_file:
         shutil.copy2(GIT_DIR + '/boot_files/' + file,
                      boot_mount + '/')
+
+    subprocess.check_call(['umount', '/dev/mmcblk0p1'])
     print("Update boot files done ...")
 
 
@@ -78,7 +77,7 @@ def install_packages():
 # Update interfaces
 def update_interfaces():
     eth0_file = '/etc/network/interfaces.d/eth0'
-    backup_file = eth0_file + '_{}'.format(
+    backup_file = '.{}'.format(
         datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     shutil.copy2(eth0_file, backup_file)
     shutil.copy2(GIT_DIR + '/interfaces.d/eth0', eth0_file)
