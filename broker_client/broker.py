@@ -161,8 +161,8 @@ class Broker(object):
 
         """
         self.close()
-        os.system("nohup org.eclipse.mosquitto.rsmb/rsmb/src/broker_mqtts >" +
-                  self.log + "&")
+        os.system("nohup /home/xilinx/jupyter_notebooks/networking/"
+                  "rsmb/rsmb/src/broker_mqtts >" + self.log + "&")
 
         for t in MQTT_PACKET_TYPES:
             bind_layers(MQTT, t, {'type': t.type})

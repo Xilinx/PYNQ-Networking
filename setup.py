@@ -41,6 +41,7 @@ __email__ = "yunq@xilinx.com"
 
 GIT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+
 # Update boot partition
 def update_boot():
     boot_mount = '/mnt/boot'
@@ -91,15 +92,6 @@ def build_submodules():
     print("Update submodules done ...")
 
 
-# Run makefiles
-def run_make(src_path, output_lib):
-    status = subprocess.check_call(["make", "-C", GIT_DIR + '/' + src_path])
-    if status is not 0:
-        print("Error while running make for", output_lib, "Exiting..")
-        sys.exit(1)
-    print("Running make for " + output_lib + " done ...")
-
-
 # Notebook delivery
 def fill_notebooks():
     src_nb = GIT_DIR + '/notebooks'
@@ -111,6 +103,18 @@ def fill_notebooks():
     for folder in ['/kernel_module', '/broker_client']:
         shutil.copytree(GIT_DIR + folder, dst_nb_dir + folder)
     print("Filling notebooks done ...")
+
+
+# Run makefiles
+def run_make(src_path, output_lib):
+    status = subprocess.check_call(["make", "-C", GIT_DIR + '/' + src_path])
+    if status is not 0:
+        print("Error while running make for", output_lib, "Exiting..")
+        sys.exit(1)
+    src_dir = GIT_DIR + '/rsmb'
+    dst_dir = '/home/xilinx/jupyter_notebooks/networking/rsmb'
+    shutil.copytree(src_dir, dst_dir)
+    print("Running make for " + output_lib + " done ...")
 
 
 # Move overlay
@@ -126,8 +130,8 @@ if len(sys.argv) > 1 and sys.argv[1] == 'install':
     install_packages()
     update_interfaces()
     build_submodules()
-    run_make("rsmb/rsmb/src/", "broker_mqtts")
     fill_notebooks()
+    run_make("rsmb/rsmb/src/", "broker_mqtts")
     fill_overlay()
 
 
