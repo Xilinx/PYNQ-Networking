@@ -12,6 +12,7 @@ git_clone:
 
 kernel_module:
 	make -C $(PWD)/linux-xlnx/ M=$(PWD) modules
+	cp -rf $(PWD)/pynqenet.ko $(PWD)/../
 
 clean:
 	make -C linux-xlnx/ M=$(PWD) clean

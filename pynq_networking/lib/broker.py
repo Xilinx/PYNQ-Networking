@@ -161,8 +161,9 @@ class Broker(object):
 
         """
         self.close()
-        os.system("nohup /home/xilinx/jupyter_notebooks/networking/"
-                  "rsmb/rsmb/src/broker_mqtts >" + self.log + "&")
+        os.system("nohup /opt/python3.6/lib/python3.6/site-packages/"
+                  "pynq_networking/rsmb/rsmb/src/broker_mqtts >" +
+                  self.log + "&")
 
         for t in MQTT_PACKET_TYPES:
             bind_layers(MQTT, t, {'type': t.type})

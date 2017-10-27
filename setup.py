@@ -27,12 +27,14 @@
 #   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 #   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 from setuptools import setup, find_packages
 import shutil
 import subprocess
 import sys
 import os
 from datetime import datetime
+
 
 __author__ = "Yun Rock Qu"
 __copyright__ = "Copyright 2017, Xilinx"
@@ -89,6 +91,10 @@ def update_interfaces():
 def build_submodules():
     subprocess.check_call(['git', 'submodule', 'init'])
     subprocess.check_call(['git', 'submodule', 'update'])
+    shutil.copytree(GIT_DIR + '/mqtt-sn-tools',
+                    GIT_DIR + '/pynq_networking/mqtt-sn-tools')
+    shutil.copytree(GIT_DIR + '/rsmb',
+                    GIT_DIR + '/pynq_networking/rsmb')
     print("Update submodules done ...")
 
 
@@ -100,8 +106,6 @@ def fill_notebooks():
         shutil.rmtree(dst_nb_dir)
     shutil.copytree(src_nb, dst_nb_dir)
 
-    for folder in ['/kernel_module', '/broker_client']:
-        shutil.copytree(GIT_DIR + folder, dst_nb_dir + folder)
     print("Filling notebooks done ...")
 
 
@@ -111,18 +115,8 @@ def run_make(src_path, output_lib):
     if status is not 0:
         print("Error while running make for", output_lib, "Exiting..")
         sys.exit(1)
-    src_dir = GIT_DIR + '/rsmb'
-    dst_dir = '/home/xilinx/jupyter_notebooks/networking/rsmb'
-    shutil.copytree(src_dir, dst_dir)
+
     print("Running make for " + output_lib + " done ...")
-
-
-# Move overlay
-def fill_overlay():
-    src_overlay = GIT_DIR + '/overlays/mqttsn'
-    dst_overlay_dir = '/home/xilinx/pynq/overlays/'
-    subprocess.check_call(['cp', '-rf', src_overlay, dst_overlay_dir])
-    print("Filling overlays done ...")
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
@@ -131,8 +125,18 @@ if len(sys.argv) > 1 and sys.argv[1] == 'install':
     update_interfaces()
     build_submodules()
     fill_notebooks()
-    run_make("rsmb/rsmb/src/", "broker_mqtts")
-    fill_overlay()
+    run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
+
+
+def package_files(directory):
+    paths = []
+    for (path, directories, file_names) in os.walk(directory):
+        for file_name in file_names:
+            paths.append(os.path.join('..', path, file_name))
+    return paths
+
+
+extra_files = package_files('pynq_networking')
 
 
 setup(name='pynq_networking',
@@ -144,7 +148,6 @@ setup(name='pynq_networking',
       packages=find_packages(),
       download_url='https://github.com/Xilinx/PYNQ-Networking',
       package_data={
-          '': ['tests/*', '*.ipynb', '*.bin', 
-               '*.ko', '*.so', '*.bit', '*.tcl'],
+          '': extra_files,
       }
       )
