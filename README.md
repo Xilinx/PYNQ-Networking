@@ -7,7 +7,10 @@ implemented on this overlay, leveraging the `scapy` python library.
 ![](./block_diagram.jpg)
 
 ## Getting Started
-To try this project, use the following command in a terminal:
+*Note: If you are on Ubuntu 15.10, 
+please refer to [Wily Release](#wily-release) before you proceed to the next step.*
+
+To try this project, use the following command in a terminal.
 
 ```
 sudo pip3.6 install --upgrade git+https://github.com/Xilinx/PYNQ-Networking.git
@@ -17,8 +20,20 @@ sudo reboot
 After the setup, the notebook folder will be populated, and users can try
 the demo there. Users do not have to run any additional steps.
 
-For completeness, the following few sections introduces what have been done
-starting from a PYNQ image V2.0 SD card.
+*Note: For completeness, the following few sections introduce what have been done
+starting from a PYNQ image V2.0 SD card. These steps do not need to be performed
+by users, since they will be taken care of when this package is being installed.*
+
+## Wily Release
+For Wily release of the Ubuntu system (15.10), please make sure the file
+`/etc/apt/sources.list.d/multistrap-wily.list` looks like the following:
+
+```
+deb [arch=armhf] http://old-releases.ubuntu.com/ubuntu wily universe main
+deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
+```
+
+And run `apt-get update` before installing any package.
 
 ## Boot Files
 This overlay requires the boot files to be upgraded to Xilinx 2017.2 tool 
@@ -111,14 +126,3 @@ Users have to modify the `eth0` port on Linux
 in `interfaces.d` folder of this repository.
 
 *Note: again, make a backup of the old files if necessary.*
-
-## Wily Release
-For Wily release of the Ubuntu system (15.10), please make sure the file
-`/etc/apt/sources.list.d/multistrap-wily.list` looks like the following:
-
-```
-deb [arch=armhf] http://old-releases.ubuntu.com/ubuntu wily universe main
-deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
-```
-
-And run `apt-get update` before installing any package.
