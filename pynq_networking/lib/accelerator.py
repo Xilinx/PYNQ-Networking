@@ -64,11 +64,10 @@ void Top(int size, int count,
 void sds_mmap(int phys, int length, void *virtual);
 void *sds_alloc(size_t size);
 """
-
-BITFILE = '/opt/python3.6/lib/python3.6/site-packages/pynq/overlays/' \
-          'mqttsn/mqttsn.bit'
-SHARED_LIB = '/opt/python3.6/lib/python3.6/site-packages/pynq/overlays/' \
-             'mqttsn/lib_mqttsn.so'
+BITFILE = '/opt/python3.6/lib/python3.6/site-packages/pynq_networking/' \
+          'overlays/mqttsn/mqttsn.bit'
+SHARED_LIB = '/opt/python3.6/lib/python3.6/site-packages/pynq_networking' \
+             '/overlays/mqttsn/lib_mqttsn.so'
 
 
 class Accelerator:

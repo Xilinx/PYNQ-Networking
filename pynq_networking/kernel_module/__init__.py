@@ -28,7 +28,7 @@
 #   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from .pynqenet import Link
+from .pynqenet import LinkManager
 
 
 __author__ = "Yun Rock Qu"

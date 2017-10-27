@@ -73,7 +73,7 @@ def install_packages():
                            'tcpdump', 'iptables', 'ebtables', 'bridge-utils'])
     subprocess.check_call(['pip3.6', 'install',
                            'scapy-python3', 'wurlitzer',
-                           'pytest-runner', 'paho-mqtt'])
+                           'pytest-runner', 'paho-mqtt', 'netifaces'])
     print("Installing packages done ...")
 
 

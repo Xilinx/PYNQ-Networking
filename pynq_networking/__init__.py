@@ -30,7 +30,7 @@
 
 from .lib import *
 from .overlays.mqttsn import MqttsnOverlay
-from .kernel_module import Link
+from .kernel_module import LinkManager
 
 
 __author__ = "Yun Rock Qu"

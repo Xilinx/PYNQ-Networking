@@ -33,6 +33,7 @@ import os
 import socket
 import struct
 import ipaddress
+import netifaces
 from uuid import getnode
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
@@ -55,9 +56,7 @@ def get_ip_string():
         The IP address representation in str format.
 
     """
-    ipaddr_slist = subprocess.run(['hostname', '-I'], stdout=subprocess.PIPE)
-    ip_str = str(ipaddr_slist.stdout.decode('utf-8').split(" ")[0])
-    return ip_str
+    return netifaces.ifaddresses('br0')[netifaces.AF_INET][0]['addr']
 
 
 def ip_str_to_int(ip_str):

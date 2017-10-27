@@ -40,45 +40,60 @@ KERNEL_MODULE_PATH = "/opt/python3.6/lib/python3.6/site-packages/" \
                      "pynq_networking/kernel_module"
 
 
-class Link:
+class LinkManager:
     """Wrapper class for bring up or down the kernel modules.
     
     After the kernel module is started, the interface called `pynq0` will be 
     setup.
 
     """
-    def __init__(self, interface_name='pynq0'):
+    def __init__(self, kernel_interface_name='pynq0'):
         """Initialize internal variables.
 
         Parameters
         ----------
-        interface_name : str
+        kernel_interface_name : str
             The name of the interface for the kernel module.
 
         """
-        self.interface_name = interface_name
-        self.status = 'DOWN'
+        self.kernel_interface_name = kernel_interface_name
         if os.system('chmod 777 ' + KERNEL_MODULE_PATH + "/*.sh"):
             raise OSError("Cannot chmod for link scripts.")
 
-    def up(self):
+    def if_up(self, interface_name, interface_ip_str):
+        """Bring up an arbitrary interface using ifconfig.
+
+        This is not required when bringing up the kernel module.
+
+        """
+        if os.system("ifconfig " + interface_name + " " + interface_ip_str):
+            raise OSError("Cannot bring up {}.".format(interface_name))
+
+    def if_down(self, interface_name):
+        """Put down an existing interface using ifconfig.
+
+        This is not required when putting down the kernel module.
+
+        """
+        if os.system("ifconfig " + interface_name + " down"):
+            raise OSError("Cannot put down {}.".format(interface_name))
+
+    def kernel_up(self):
         """Bring up the interface after running `link_up.sh`.
         
         Must make sure the desired interface has not been up before running
         this method.
 
         """
-        self.link_down()
+        self.kernel_down()
         _ = os.system(KERNEL_MODULE_PATH + "/link_up.sh")
 
         interface_list = os.listdir('/sys/class/net/')
         if 'pynq0' not in interface_list:
             raise ValueError("Interface {} not set up properly.".format(
-                self.interface_name))
+                self.kernel_interface_name))
 
-        self.status = 'UP'
-
-    def down(self):
+    def kernel_down(self):
         """Put down the interface after running `link_down.sh`.
 
         Must make sure the desired interface has not been down before running
@@ -92,6 +107,4 @@ class Link:
         interface_list = os.listdir('/sys/class/net/')
         if 'pynq0' in interface_list:
             raise ValueError("Interface {} not put down properly.".format(
-                self.interface_name))
-
-        self.status = 'DOWN'
+                self.kernel_interface_name))
