@@ -117,7 +117,7 @@ There are several packages installed during the setup:
 
 ```shell
 apt-get install tcpdump iptables ebtables bridge-utils
-pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt
+pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt netifaces
 ```
 
 ## Modifying `eth0` Port
