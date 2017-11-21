@@ -73,6 +73,101 @@ class Accelerator:
     """Accelerator for constructing MQTTSN packets.
 
     This accelerator is tied to the hardware block built using SDSoC.
+    
+    The following is a table of the memory mapped registers:
+AXILiteS	
+0x00	Control signals
+bit 0 - ap_start (Read/Write/COH)
+bit 1 - ap_done (Read/COR)
+bit 2 - ap_idle (Read)
+bit 3 - ap_ready (Read)
+bit 7 - auto_restart (Read/Write)
+others - reserved
+0x04	Global Interrupt Enable Register
+bit 0 - Global Interrupt Enable (Read/Write)
+others - reserved
+0x08	IP Interrupt Enable Register (Read/Write)
+bit 0 - Channel 0 (ap_done)
+bit 1 - Channel 1 (ap_ready)
+others - reserved
+0x0c	IP Interrupt Status Register (Read/TOW)
+bit 0 - Channel 0 (ap_done)
+bit 1 - Channel 1 (ap_ready)
+others - reserved
+0x10	Data signal of b
+bit 0 - b[0] (Read/Write)
+others - reserved
+0x14	reserved
+0x18	Data signal of macAddress_V
+bit 31~0 - macAddress_V[31:0] (Read/Write)
+0x1c	Data signal of macAddress_V
+bit 15~0 - macAddress_V[47:32] (Read/Write)
+others - reserved
+0x20	reserved
+0x24	Data signal of ipAddress_V
+bit 31~0 - ipAddress_V[31:0] (Read/Write)
+0x28	reserved
+0x2c	Data signal of i
+bit 31~0 - i[31:0] (Read/Write)
+0x30	reserved
+0x34	Data signal of destIP_V
+bit 31~0 - destIP_V[31:0] (Read/Write)
+0x38	reserved
+0x3c	Data signal of destPort
+bit 31~0 - destPort[31:0] (Read/Write)
+0x40	reserved
+0x44	Data signal of topicID_V
+bit 15~0 - topicID_V[15:0] (Read/Write)
+others - reserved
+0x48	reserved
+0x4c	Data signal of qos
+bit 31~0 - qos[31:0] (Read/Write)
+0x50	reserved
+0x54	Data signal of message
+bit 31~0 - message[31:0] (Read/Write)
+0x58	reserved
+0x5c	Data signal of validMessage
+bit 0 - validMessage[0] (Read/Write)
+others - reserved
+0x60	reserved
+0x64	Data signal of network IOP offset
+bit 31~0 - network IOP offset[31:0] (Read/Write)
+0x68	reserved
+0x6c	Data signal of count
+bit 31~0 - count[31:0] (Read/Write)
+0x70	reserved
+0x74	Data signal of size
+bit 31~0 - size[31:0] (Read/Write)
+0x78	reserved
+0x7c	Data signal of reset
+bit 0 - reset[0] (Read/Write)
+others - reserved
+0x80	reserved
+0x84	Data signal of p_verbose
+bit 0 - p_verbose[0] (Read/Write)
+others - reserved
+0x88	reserved
+0x8c	Data signal of events_completed
+bit 31~0 - events_completed[31:0] (Read)
+0x90	Control signal of events_completed
+bit 0 - events_completed_ap_vld (Read/COR)
+others - reserved
+0x94	Data signal of publishes_sent
+bit 31~0 - publishes_sent[31:0] (Read)
+0x98	Control signal of publishes_sent
+bit 0 - publishes_sent_ap_vld (Read/COR)
+others - reserved
+0x9c	Data signal of packets_received
+bit 31~0 - packets_received[31:0] (Read)
+0xa0	Control signal of packets_received
+bit 0 - packets_received_ap_vld (Read/COR)
+others - reserved
+0xa4	Data signal of packets_sent
+bit 31~0 - packets_sent[31:0] (Read)
+0xa8	Control signal of packets_sent
+bit 0 - packets_sent_ap_vld (Read/COR)
+others - reserved
+SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake
 
     Attributes
     ----------
