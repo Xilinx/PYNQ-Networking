@@ -32,7 +32,7 @@ from .broker import Broker
 from .broker import get_ip_string, get_mac_string
 from .broker import ip_str_to_int, mac_str_to_int, int_2_ip_str
 from .mqtt import *
-from .mqttsn_sw import *
+from .mqttsn import *
 
 """The following imports are not included.
  
@@ -41,6 +41,7 @@ This is to avoid errors when not running the accelerator overlay.
 from .network_iop import NetworkIOP
 from .slurper import PacketSlurper
 from .pynqsocket import L2PynqSocket
+from .mqttsn_sw import *
 from .mqttsn_hw import *
 from .accelerator import Accelerator
 

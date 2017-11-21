@@ -39,7 +39,6 @@ logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 from wurlitzer import sys_pipes
 from pynq import PL, MMIO
-from .mqttsn_sw import *
 from .broker import ip_str_to_int, mac_str_to_int
 
 
