@@ -44,29 +44,6 @@ __email__ = "yunq@xilinx.com"
 GIT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-# Update boot partition
-def update_boot():
-    boot_mount = '/mnt/boot'
-    if not os.path.exists('/mnt/boot'):
-        subprocess.check_call(['mkdir', boot_mount])
-    subprocess.check_call(['mount', '/dev/mmcblk0p1', boot_mount])
-
-    backup_folder = boot_mount + '/BOOT_PARTITION_{}'.format(
-        datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    subprocess.check_call(['mkdir', backup_folder])
-    boot_file = ['BOOT.bin', 'devicetree.dtb', 'uEnv.txt', 'uImage']
-    for file in boot_file:
-        if os.path.isfile(boot_mount + '/' + file):
-            shutil.copy2(boot_mount + '/' + file,
-                         backup_folder + '/')
-    for file in boot_file:
-        shutil.copy2(GIT_DIR + '/boot_files/' + file,
-                     boot_mount + '/')
-
-    subprocess.check_call(['umount', '/dev/mmcblk0p1'])
-    print("Update boot files done ...")
-
-
 # Install packages
 def install_packages():
     subprocess.check_call(['apt-get', '--yes', '--force-yes', 'install',
@@ -120,7 +97,6 @@ def run_make(src_path, output_lib):
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
-    update_boot()
     install_packages()
     update_interfaces()
     build_submodules()
