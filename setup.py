@@ -116,7 +116,7 @@ extra_files = package_files('pynq_networking')
 
 
 setup(name='pynq_networking',
-      version='2.0',
+      version='2.1',
       description='PYNQ networking package',
       author='Xilinx networking group',
       author_email='stephenn@xilinx.com',
