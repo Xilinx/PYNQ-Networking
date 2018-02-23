@@ -12,9 +12,9 @@ obj-m += pynqenet.o
 all: git_clone kernel_module
 
 git_clone:
-	git clone https://github.com/Xilinx/PYNQ.git .pynq_git
+	/usr/bin/git clone https://github.com/Xilinx/PYNQ.git .pynq_git
 	cd .pynq_git/sdbuild && \
-	git checkout -b $(PYNQ_TAG) origin/$(PYNQ_TAG) && \
+	/usr/bin/git checkout -b $(PYNQ_TAG) origin/$(PYNQ_TAG) && \
 	make boot_files RELEASE=$(RELEASE) && \
 	cd ../..
 

@@ -287,7 +287,7 @@ static netdev_tx_t pynqenet_xmit(struct sk_buff *skb, struct net_device *dev)
     /* send the packet to the PL */
     err = xlnx_dma_chan_send_packet(adapter->tx_chan, data, len);
     if (err < 0) {
-        netdev_info(dev, "TX to DMA failed: %d\n", err);
+        // netdev_info(dev, "TX to DMA failed: %d\n", err);
         dev->stats.tx_dropped++;
     } else {
         dev->stats.tx_bytes += skb->len;

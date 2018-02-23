@@ -452,6 +452,7 @@ int xlnx_dma_chan_send_packet(struct xlnx_dma_chan *chan, void *buf, size_t len)
 
     /* make sure the channel is for sending too the DMA */
     if (chan->direction != DMA_MEM_TO_DEV) {
+        printk(KERN_INFO "xlnx_dma: Wrong channel\n");
         return -EINVAL;
     }
 
@@ -470,6 +471,7 @@ int xlnx_dma_chan_send_packet(struct xlnx_dma_chan *chan, void *buf, size_t len)
 
     /* make sure the data can fit within an ethernet frame */
     if (len > ETH_FRAME_LEN) {
+        printk(KERN_INFO "xlnx_dma: Frame too long\n");
         return -ENOMEM;
     }
     /* make sure we have enough buffer space to send the packet */
