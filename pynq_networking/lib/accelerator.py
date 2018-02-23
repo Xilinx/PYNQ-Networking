@@ -310,7 +310,7 @@ SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Hand
         acc_mmio = MMIO(0x83c00000, 0x10000)
         acc_mmio.write(0x10, 1)
         acc_mmio.write(0x18, pl_mac & 0xFFFFFFFF)
-        acc_mmio.write(0x1c, pl_mac >> 32 + 1)
+        acc_mmio.write(0x1c, pl_mac >> 32)
         acc_mmio.write(0x24, pl_ip)
         acc_mmio.write(0x2c, 1)
         acc_mmio.write(0x34, server_ip)
