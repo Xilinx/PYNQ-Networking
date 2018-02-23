@@ -7,10 +7,7 @@ implemented on this overlay, leveraging the `scapy` python library.
 ![](./block_diagram.jpg)
 
 ## Getting Started
-*Note: If you are on Ubuntu 15.10, 
-please refer to [Wily Release](#wily-release) before you proceed to the next step.*
-
-To try this project, use the following command in a terminal.
+On the latest PYNQ image, use the following command in a terminal.
 
 ```
 sudo pip3.6 install --upgrade git+https://github.com/Xilinx/PYNQ-Networking.git
@@ -21,11 +18,11 @@ After the setup, the notebook folder will be populated, and users can try
 the demo there. Users do not have to run any additional steps.
 
 *Note: For completeness, the following few sections introduce what have been done
-starting from a PYNQ image V2.0 SD card. These steps do not need to be performed
+to the PYNQ image. These steps do not need to be performed
 by users, since they will be taken care of when this package is being installed.*
 
 ## Wily Release
-For Wily release of the Ubuntu system (15.10), please make sure the file
+For Ubuntu 15.10, please make sure the file
 `/etc/apt/sources.list.d/multistrap-wily.list` looks like the following:
 
 ```
@@ -35,9 +32,12 @@ deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
 
 And run `apt-get update` before installing any package.
 
+users can safely ignore this step if they are on the latest PYNQ image.
+(For example, PYNQ image v2.1 deploys Ubuntu 16.04.)
+
 ## Boot Files
-This overlay requires the boot files to be upgraded to Xilinx 2017.2 tool 
-suite. For example, the device tree must have the following patch:
+This package requires the boot files to be compatible. 
+For example, the device tree must have the following patch:
 
 ```
 / {
@@ -91,26 +91,8 @@ suite. For example, the device tree must have the following patch:
 ```
 The ethernet entry must have bridging enabled as above.
 
-Files in the boot partition compatible to 2017.2 tool suite are in 
-`boot_files`. Users can replace the files in the boot partition of a PYNQ
-image.
-
-*Note: make a backup of the old files if necessary before replacing files!*
-
-The source files to generate those boot files, are in 
-`Pynq-Z1-defconfig`; 
-this folder has several patches for the folder of the same name in `sdbuild`
-of the mainline PYNQ repository. For example, `kernel.config` file enables the 
-IP bridging functionality.
-
-The Linux kernel is compiled using the following configuration 
-(`Pynq-Z1-defconfig/config`, based on Xilinx Linux kernel 2017.2 release):
-```
-LINUX_REPO ?= https://github.com/Xilinx/linux-xlnx.git
-LINUX_COMMIT ?= 5d029fdc257cf88e65500db348eda23040af332b
-```
-Note that the object file `kernel_module/pynqenet.ko` also has
-to be compiled against this Linux kernel source.
+Again, if you are on the latest PYNQ image, you do not have
+to do this step.
 
 ## Installing Packages
 There are several packages installed during the setup:
@@ -119,10 +101,14 @@ There are several packages installed during the setup:
 apt-get install tcpdump iptables ebtables bridge-utils
 pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt netifaces
 ```
+This step does not need to be run by the users, since it
+has been taken care of by the installation process.
 
 ## Modifying `eth0` Port
-Users have to modify the `eth0` port on Linux 
+Users can modify the `eth0` port on Linux 
 (`/etc/network/interfaces.d/eth0`). An example of the modified file is stored
 in `interfaces.d` folder of this repository.
 
-*Note: again, make a backup of the old files if necessary.*
+This step will be performed automatically during the installation process. 
+A backup of the original file is also produced in the same directory 
+(`/etc/network/interfaces.d/`).
