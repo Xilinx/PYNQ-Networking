@@ -64,15 +64,17 @@ class MqttsnOverlay(pynq.Overlay):
         super().__init__(bitfile, **kwargs)
 
         if self.is_loaded():
-            self.PMODA = {'ip_name': 'mb_bram_ctrl_1',
-                          'rst_name': 'mb_1_reset'}
-            self.PMODB = {'ip_name': 'mb_bram_ctrl_2',
-                          'rst_name': 'mb_2_reset'}
-            self.ARDUINO = {'ip_name': 'mb_bram_ctrl_3',
-                            'rst_name': 'mb_3_reset'}
+            self.iop_pmoda.mbtype = "Pmod"
+            self.iop_pmodb.mbtype = "Pmod"
+            self.iop_arduino.mbtype = "Arduino"
 
-            self.leds = self.swsleds_gpio.channel2
-            self.switches = self.swsleds_gpio.channel1
+            self.PMODA = self.iop_pmoda.mb_info
+            self.PMODB = self.iop_pmodb.mb_info
+            self.ARDUINO = self.iop_arduino.mb_info
+
+            self.audio = self.audio_direct_0
+            self.leds = self.leds_gpio.channel1
+            self.switches = self.switches_gpio.channel1
             self.buttons = self.btns_gpio.channel1
             self.leds.setlength(4)
             self.switches.setlength(2)
