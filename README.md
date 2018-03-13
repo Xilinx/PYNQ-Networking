@@ -11,7 +11,6 @@ On the latest PYNQ image, use the following command in a terminal.
 
 ```
 sudo pip3.6 install --upgrade git+https://github.com/Xilinx/PYNQ-Networking.git
-sudo reboot
 ```
 
 After the setup, the notebook folder will be populated, and users can try
