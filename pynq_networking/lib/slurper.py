@@ -78,45 +78,24 @@ class PacketSlurper(NetworkIOP):
         self.array = self.mmio.array
         self.mem = self.mmio.mem
 
-        # start polling to receive packets
-        self._rx_packet = None
-        self._queue = Queue(maxsize=4)
-
-    def _poll_rx_thread(self):
-        while True:
-            if self.has_packet():
-                to_read = super().read32(self.RX_LEN_OFFSET)
-                i = 0
-                pkt = b""
-                while to_read:
-                    data = super().read32(self.RX_DATA_OFFSET+i)
-                    read = min(to_read, 4)
-                    pkt = pkt + data.to_bytes(4, byteorder='little')
-                    to_read = to_read - read
-                    i = i + 1
-                if not self._queue.full():
-                    self._queue.put(pkt)
-                super().write32(self.RX_EN_OFFSET, 0x00)
-
     def has_packet(self):
         t = super().read32(self.RX_EN_OFFSET)
         return t == 1
-
-    def recvt(self):
-        result = self._queue.get()
-        return result
 
     def recv(self):
         if self.has_packet():
             to_read = super().read32(self.RX_LEN_OFFSET)
             i = 0
             pkt = b""
-            while to_read:
+            while to_read>4:
                 data = super().read32(self.RX_DATA_OFFSET+i)
-                read = min(to_read, 4)
                 pkt = pkt + data.to_bytes(4, byteorder='little')
-                to_read = to_read - read
+                to_read = to_read - 4
                 i = i + 1
+            data = super().read32(self.RX_DATA_OFFSET+i)
+            remainder = data.to_bytes(4, byteorder='little')
+            remainder = remainder[0:to_read]
+            pkt = pkt + remainder
             super().write32(self.RX_EN_OFFSET, 0x00)
             return pkt
         return None
