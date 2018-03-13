@@ -96,12 +96,20 @@ def run_make(src_path, output_lib):
     print("Running make for " + output_lib + " done ...")
 
 
+# Bring br0 up online
+def if_up_br0():
+    subprocess.check_call(['ifup', 'br0'])
+
+    print("Bringing up br0 done ...")
+
+
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
     install_packages()
     update_interfaces()
     build_submodules()
     fill_notebooks()
     run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
+    if_up_br0()
 
 
 def package_files(directory):
