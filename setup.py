@@ -99,6 +99,7 @@ def run_make(src_path, output_lib):
 # Bring br0 up online
 def if_up_br0():
     subprocess.check_call(['ifup', 'br0'])
+    subprocess.check_call(['service', 'networking', 'restart'])
 
     print("Bringing up br0 done ...")
 
