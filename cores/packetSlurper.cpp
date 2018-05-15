@@ -19,19 +19,37 @@ ap_uint<BitWidth<N>::Value> keptbytes(ap_uint<N> keep) {
 // 2 -> 0b0011
 // 3 -> 0b0111
 template<int N>
-ap_uint<N> generatekeep(ap_uint<BitWidth<N>::Value> rem) {
+void init_generatekeep_ROM(ap_uint<N> table[64]) {
 #pragma HLS inline self off
-    assert(N <= 64);
-    ap_uint<N> table[64]; // Should be N.  This is a work around for an HLS bug.
-    table[0] = -1;
-    for(int i = 1; i < N; i++) {
-        table[i] = (1<<i)-1;
+    for(int i = 0; i < N; i++) {
+        table[i] = (i == 0) ? -1 : (1<<i)-1;
     }
-    return table[rem];
-    // if(rem == 0) {return 0xF;}
-    // else if(rem == 1) {return 0x1;}
-    // else if(rem == 2) {return 0x3;}
-    // else return 0x7;
+}
+template<int N>
+ap_uint<N> generatekeep(ap_uint<BitWidth<N>::Value> remainder) {
+#pragma HLS inline
+    ap_uint<N> table[64]; // FIXME: workaround for HLS bug.
+    init_generatekeep_ROM(table);
+    return table[remainder];
+}
+template<>
+inline ap_uint<4> generatekeep<4>(ap_uint<BitWidth<4>::Value> remainder) {
+#pragma HLS inline
+    const ap_uint<4> table[64] = {0xF, 0x1, 0x3, 0x7}; // FIXME: workaround for HLS bug.
+    return table[remainder];
+}
+template<>
+inline ap_uint<8> generatekeep<8>(ap_uint<BitWidth<8>::Value> remainder) {
+#pragma HLS inline
+    const ap_uint<8> table[64] = {0xFF, 0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F, 0x7F}; // FIXME: workaround for HLS bug.
+    return table[remainder];
+}
+template<>
+inline ap_uint<16> generatekeep<16>(ap_uint<BitWidth<16>::Value> remainder) {
+#pragma HLS inline
+    const ap_uint<16> table[64] = {0xFFFF, 0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F, 0x7F,
+                                   0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF, 0x3FFF, 0x7FFF}; // FIXME: workaround for HLS bug.
+    return table[remainder];
 }
 
 // data layout:
