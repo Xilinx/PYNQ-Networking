@@ -84,6 +84,15 @@ else:
     pynq_package_files.extend(collect_pynq_overlays())
 
 
+default_nb_dir = '/home/xilinx/jupyter_notebooks'
+if 'PYNQ_JUPYTER_NOTEBOOKS' in os.environ:
+    notebooks_dir = os.environ['PYNQ_JUPYTER_NOTEBOOKS']
+elif os.path.exists(default_nb_dir):
+    notebooks_dir = default_nb_dir
+else:
+    notebooks_dir = None
+
+
 # Update interfaces
 def update_interfaces():
     eth0_file = '/etc/network/interfaces.d/eth0'
@@ -106,13 +115,21 @@ def build_submodules():
 
 
 # Notebook delivery
-def fill_notebooks():
-    src_nb = os.path.join(GIT_DIR, '/notebooks')
-    dst_nb_dir = '/home/xilinx/jupyter_notebooks/networking'
-    if os.path.exists(dst_nb_dir):
-        remove_tree(dst_nb_dir)
-    copy_tree(src_nb, dst_nb_dir)
+def copy_overlay_notebooks():
+    if notebooks_dir is None or board_folder is None:
+        return None
 
+    if os.path.isdir(board_folder):
+        overlay_notebook_folders = [
+            (os.path.join(notebooks_dir, overlay),
+             os.path.join(board_folder, overlay, 'notebooks/'))
+            for overlay in list(os.listdir(board_folder))
+            if os.path.isdir(os.path.join(board_folder, overlay, 'notebooks'))]
+
+        for dst_folder, src_folder in overlay_notebook_folders:
+            if os.path.exists(dst_folder):
+                remove_tree(dst_folder)
+            copy_tree(src_folder, dst_folder)
     print("Filling notebooks done ...")
 
 
@@ -137,7 +154,7 @@ def if_up_br0():
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
     update_interfaces()
     build_submodules()
-    fill_notebooks()
+    copy_overlay_notebooks()
     run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
     if_up_br0()
 
