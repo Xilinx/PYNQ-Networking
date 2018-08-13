@@ -5,7 +5,7 @@ auto br0
 iface br0 inet dhcp
 bridge_ports eth0
 
-auto eth0:1
-iface eth0:1 inet static
+auto br0:1
+iface br0:1 inet static
 address 192.168.2.99
 netmask 255.255.255.0
