@@ -29,10 +29,12 @@
 
 
 from setuptools import setup, find_packages
-import shutil
+from distutils.dir_util import copy_tree, remove_tree
+from distutils.file_util import copy_file
 import subprocess
 import sys
 import os
+import glob
 from datetime import datetime
 
 
@@ -44,14 +46,51 @@ __email__ = "yunq@xilinx.com"
 GIT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-# Install packages
-def install_packages():
-    subprocess.check_call(['apt-get', '--yes', '--force-yes', 'install',
-                           'tcpdump', 'iptables', 'ebtables', 'bridge-utils'])
-    subprocess.check_call(['pip3.6', 'install',
-                           'scapy-python3', 'wurlitzer',
-                           'pytest-runner', 'paho-mqtt', 'netifaces'])
-    print("Installing packages done ...")
+# Board specific package delivery setup
+def exclude_from_files(exclude, path):
+    return [file for file in os.listdir(path)
+            if os.path.isfile(os.path.join(path, file))
+            and file != exclude]
+
+
+def find_overlays(path):
+    return [f for f in os.listdir(path)
+            if os.path.isdir(os.path.join(path, f))
+            and len(glob.glob(os.path.join(path, f, "*.bit"))) > 0]
+
+
+def collect_pynq_overlays():
+    overlay_files = []
+    overlay_dirs = find_overlays(board_folder)
+    for ol in overlay_dirs:
+        copy_tree(os.path.join(board_folder, ol),
+                  os.path.join("pynq_networking/overlays", ol))
+        newdir = os.path.join("pynq_networking/overlays", ol)
+        files = exclude_from_files('makefile', newdir)
+        overlay_files.extend(
+                [os.path.join("..", newdir, f) for f in files])
+    return overlay_files
+
+
+pynq_package_files = []
+if 'BOARD' not in os.environ:
+    print("Please set the BOARD environment variable "
+          "to get any BOARD specific overlays (e.g. Pynq-Z1).")
+    board = None
+    board_folder = None
+else:
+    board = os.environ['BOARD']
+    board_folder = 'boards/{}'.format(board)
+    pynq_package_files.extend(collect_pynq_overlays())
+
+
+default_nb_dir = '/home/xilinx/jupyter_notebooks'
+if 'PYNQ_JUPYTER_NOTEBOOKS' in os.environ:
+    notebooks_dir = os.environ['PYNQ_JUPYTER_NOTEBOOKS']
+elif os.path.exists(default_nb_dir):
+    notebooks_dir = default_nb_dir
+else:
+    notebooks_dir = None
 
 
 # Update interfaces
@@ -59,8 +98,8 @@ def update_interfaces():
     eth0_file = '/etc/network/interfaces.d/eth0'
     backup_file = '/etc/network/interfaces.d/.{}'.format(
         datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    shutil.copy2(eth0_file, backup_file)
-    shutil.copy2(GIT_DIR + '/interfaces.d/eth0', eth0_file)
+    copy_file(eth0_file, backup_file)
+    copy_file(GIT_DIR + '/interfaces.d/eth0', eth0_file)
     print("Update interface files done ...")
 
 
@@ -68,21 +107,29 @@ def update_interfaces():
 def build_submodules():
     subprocess.check_call(['git', 'submodule', 'init'])
     subprocess.check_call(['git', 'submodule', 'update'])
-    shutil.copytree(GIT_DIR + '/mqtt-sn-tools',
-                    GIT_DIR + '/pynq_networking/mqtt-sn-tools')
-    shutil.copytree(GIT_DIR + '/rsmb',
-                    GIT_DIR + '/pynq_networking/rsmb')
+    copy_tree(GIT_DIR + '/mqtt-sn-tools',
+              GIT_DIR + '/pynq_networking/mqtt-sn-tools')
+    copy_tree(GIT_DIR + '/rsmb',
+              GIT_DIR + '/pynq_networking/rsmb')
     print("Update submodules done ...")
 
 
 # Notebook delivery
-def fill_notebooks():
-    src_nb = GIT_DIR + '/notebooks'
-    dst_nb_dir = '/home/xilinx/jupyter_notebooks/networking'
-    if os.path.exists(dst_nb_dir):
-        shutil.rmtree(dst_nb_dir)
-    shutil.copytree(src_nb, dst_nb_dir)
+def copy_overlay_notebooks():
+    if notebooks_dir is None or board_folder is None:
+        return None
 
+    if os.path.isdir(board_folder):
+        overlay_notebook_folders = [
+            (os.path.join(notebooks_dir, overlay),
+             os.path.join(board_folder, overlay, 'notebooks/'))
+            for overlay in list(os.listdir(board_folder))
+            if os.path.isdir(os.path.join(board_folder, overlay, 'notebooks'))]
+
+        for dst_folder, src_folder in overlay_notebook_folders:
+            if os.path.exists(dst_folder):
+                remove_tree(dst_folder)
+            copy_tree(src_folder, dst_folder)
     print("Filling notebooks done ...")
 
 
@@ -105,10 +152,9 @@ def if_up_br0():
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'install':
-    install_packages()
     update_interfaces()
     build_submodules()
-    fill_notebooks()
+    copy_overlay_notebooks()
     run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
     if_up_br0()
 
@@ -121,11 +167,9 @@ def package_files(directory):
     return paths
 
 
-extra_files = package_files('pynq_networking')
-
-
+pynq_package_files.extend(package_files('pynq_networking'))
 setup(name='pynq_networking',
-      version='2.1',
+      version='2.3',
       description='PYNQ networking package',
       author='Xilinx networking group',
       author_email='stephenn@xilinx.com',
@@ -133,6 +177,14 @@ setup(name='pynq_networking',
       packages=find_packages(),
       download_url='https://github.com/Xilinx/PYNQ-Networking',
       package_data={
-          '': extra_files,
-      }
+          '': pynq_package_files,
+      },
+      install_requires=[
+          'scapy-python3',
+          'wurlitzer',
+          'pytest-runner',
+          'paho-mqtt',
+          'netifaces',
+          'pynq>=2.3'
+      ]
       )
