@@ -21,20 +21,6 @@ the demo there. Users do not have to run any additional steps.
 to the PYNQ image. These steps do not need to be performed
 by users, since they will be taken care of when this package is being installed.*
 
-## Wily Release
-For Ubuntu 15.10, please make sure the file
-`/etc/apt/sources.list.d/multistrap-wily.list` looks like the following:
-
-```
-deb [arch=armhf] http://old-releases.ubuntu.com/ubuntu wily universe main
-deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
-```
-
-And run `apt-get update` before installing any package.
-
-users can safely ignore this step if they are on the latest PYNQ image.
-(For example, PYNQ image v2.1 deploys Ubuntu 16.04.)
-
 ## Boot Files
 This package requires the boot files to be compatible. 
 For example, the device tree must have the following patch:
@@ -93,16 +79,6 @@ The ethernet entry must have bridging enabled as above.
 
 Again, if you are on the latest PYNQ image, you do not have
 to do this step.
-
-## Installing Packages
-There are several packages installed during the setup:
-
-```shell
-apt-get install tcpdump iptables ebtables bridge-utils
-pip3.6 install scapy-python3 wurlitzer pytest-runner paho-mqtt netifaces
-```
-This step does not need to be run by the users, since it
-has been taken care of by the installation process.
 
 ## Modifying `eth0` Port
 Users can modify the `eth0` port on Linux 

@@ -31,7 +31,7 @@
 import struct
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
+from kamene.all import *
 from .pynqsocket import L2PynqSocket
 from .broker import ip_str_to_int, mac_str_to_int, int_2_ip_str
 from .mqttsn import *

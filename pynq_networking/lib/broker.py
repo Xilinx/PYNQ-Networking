@@ -37,7 +37,7 @@ import netifaces
 from uuid import getnode
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
+from kamene.all import *
 from .mqtt import *
 from .mqttsn_sw import *
 
