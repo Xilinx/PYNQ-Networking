@@ -36,11 +36,11 @@ import ipaddress
 import netifaces
 from uuid import getnode
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
+from kamene.all import *
 from .mqtt import *
 from .mqttsn_sw import *
-
+from site import getsitepackages
 
 __author__ = "Yun Rock Qu"
 __copyright__ = "Copyright 2017, Xilinx"
@@ -159,10 +159,11 @@ class Broker(object):
         any running broker already. Then it binds the port number to packets.
 
         """
+        broker = os.path.join(getsitepackages()[0], 'pynq_networking', 'rsmb',
+                           'rsmb', 'src', 'broker_mqtts')
+
         self.close()
-        os.system("nohup /opt/python3.6/lib/python3.6/site-packages/"
-                  "pynq_networking/rsmb/rsmb/src/broker_mqtts >" +
-                  self.log + "&")
+        os.system(f"nohup {broker} > {self.log}  &")
 
         for t in MQTT_PACKET_TYPES:
             bind_layers(MQTT, t, {'type': t.type})

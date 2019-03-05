@@ -29,16 +29,14 @@
 
 
 import os
-
+from site import getsitepackages
 
 __author__ = "Yun Rock Qu"
 __copyright__ = "Copyright 2017, Xilinx"
 __email__ = "yunq@xilinx.com"
 
-
-KERNEL_MODULE_PATH = "/opt/python3.6/lib/python3.6/site-packages/" \
-                     "pynq_networking/kernel_module"
-
+KERNEL_MODULE_PATH = os.path.join(getsitepackages()[0], 'pynq_networking',
+                                  'kernel_module')
 
 class LinkManager:
     """Wrapper class for bring up or down the kernel modules.

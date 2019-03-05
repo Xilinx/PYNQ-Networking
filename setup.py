@@ -151,12 +151,11 @@ def if_up_br0():
     print("Bringing up br0 done ...")
 
 
-if len(sys.argv) > 1 and sys.argv[1] == 'install':
-    update_interfaces()
-    build_submodules()
-    copy_overlay_notebooks()
-    run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
-    if_up_br0()
+update_interfaces()
+build_submodules()
+copy_overlay_notebooks()
+run_make("pynq_networking/rsmb/rsmb/src/", "broker_mqtts")
+if_up_br0()
 
 
 def package_files(directory):
@@ -169,7 +168,7 @@ def package_files(directory):
 
 pynq_package_files.extend(package_files('pynq_networking'))
 setup(name='pynq_networking',
-      version='2.3',
+      version='2.4',
       description='PYNQ networking package',
       author='Xilinx networking group',
       author_email='stephenn@xilinx.com',
@@ -180,11 +179,11 @@ setup(name='pynq_networking',
           '': pynq_package_files,
       },
       install_requires=[
-          'scapy-python3',
+          'kamene',
           'wurlitzer',
           'pytest-runner',
           'paho-mqtt',
           'netifaces',
-          'pynq>=2.3'
+          'pynq>=2.4'
       ]
       )

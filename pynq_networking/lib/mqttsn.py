@@ -30,8 +30,8 @@
 
 import struct
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
+from kamene.all import *
 
 
 __author__ = "Stephen Neuendorffer"
@@ -39,7 +39,7 @@ __copyright__ = "Copyright 2017, Xilinx"
 __email__ = "stephenn@xilinx.com"
 
 
-""" Scapy dissector definitions for MQTT-SN packets."""
+""" Kamene dissector definitions for MQTT-SN packets."""
 
 
 def MQTTSN_FLAGS():

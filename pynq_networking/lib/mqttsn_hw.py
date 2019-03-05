@@ -30,8 +30,8 @@
 
 import struct
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
+from kamene.all import *
 from .pynqsocket import L2PynqSocket
 from .broker import ip_str_to_int, mac_str_to_int, int_2_ip_str
 from .mqttsn import *
@@ -70,7 +70,7 @@ def mqttsn_valid_ack(ack, t):
         return False
     if MQTTSN in ack:
         print("MQTTSN:", ack.summary())
-        # FIXME: model this in the same way as scapy in the packet description
+        # FIXME: model this in the same way as kamene in the packet description
         if isinstance(ack[MQTTSN].payload, t):
             return True
         else:
