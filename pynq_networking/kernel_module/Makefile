@@ -14,7 +14,7 @@ check:
 module:
 	cd ${PROJECT} &&\
 	petalinux-create --force -t modules -n pynqenet --enable &&\
-	cp -rf ${RECIPE} project-spec/meta-user/recipes-modules/pynqenet &&\
+	cp -rf ${RECIPE} project-spec/meta-user/recipes-modules &&\
 	petalinux-build -c kernel &&\
 	petalinux-build -c pynqenet -x do_install &&\
 	cp -f build/tmp/work/plnx_zynq7-xilinx-linux-gnueabi/pynqenet/1.0-r0/pynqenet.ko ${DIR}
