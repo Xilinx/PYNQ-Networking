@@ -31,11 +31,12 @@
 import os
 import subprocess
 import struct
+from site import getsitepackages
 from cffi import FFI
 from uuid import getnode
 from socket import inet_aton
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
 from kamene.all import *
 from wurlitzer import sys_pipes
 from pynq import PL, MMIO
@@ -63,10 +64,12 @@ void Top(int size, int count,
 void sds_mmap(int phys, int length, void *virtual);
 void *sds_alloc(size_t size);
 """
-BITFILE = '/opt/python3.6/lib/python3.6/site-packages/pynq_networking/' \
-          'overlays/mqttsn/mqttsn.bit'
-SHARED_LIB = '/opt/python3.6/lib/python3.6/site-packages/pynq_networking' \
-             '/overlays/mqttsn/lib_mqttsn.so'
+
+PYNQ_NETWORKING_PATH = os.path.join(getsitepackages()[0], 'pynq_networking')
+MQTTSN_OVERLAY_PATH = os.path.join(PYNQ_NETWORKING_PATH, 'overlays','mqttsn')
+
+BITFILE = os.path.join(MQTTSN_OVERLAY_PATH, 'mqttsn.bit')
+SHARED_LIB = os.path.join(MQTTSN_OVERLAY_PATH, 'lib_mqttsn.so')
 
 
 class Accelerator:

@@ -29,7 +29,7 @@
 
 
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
 from kamene.all import *
 from .slurper import PacketSlurper
 
@@ -40,7 +40,7 @@ __email__ = "stephenn@xilinx.com"
 
 
 class L2PynqSocket(SuperSocket):
-    """A scapy-like socket object that reads and writes packets.
+    """A kamene-like socket object that reads and writes packets.
     
     The packets will be accessed using the PYNQ NetworkIOP interface;
     i.e., read/write packets at layer 2 using PYNQ bypass.

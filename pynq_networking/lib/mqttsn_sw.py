@@ -30,7 +30,7 @@
 
 import struct
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
 from kamene.all import *
 from .mqttsn import *
 
@@ -40,7 +40,7 @@ __copyright__ = "Copyright 2017, Xilinx"
 __email__ = "stephenn@xilinx.com"
 
 
-""" Scapy implementation of the MQTTSN protocol """
+""" Kamene implementation of the MQTTSN protocol """
 
 
 def valid_ack(ack, t):

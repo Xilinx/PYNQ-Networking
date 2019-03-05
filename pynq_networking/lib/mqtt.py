@@ -30,7 +30,7 @@
 
 import struct
 import logging
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+logging.getLogger("kamene.runtime").setLevel(logging.ERROR)
 from kamene.all import *
 
 
@@ -39,11 +39,11 @@ __copyright__ = "Copyright 2017, Xilinx"
 __email__ = "stephenn@xilinx.com"
 
 
-""" Scapy dissector definitions for MQTT packets.
+""" Kamene dissector definitions for MQTT packets.
 
     We have a stream of MQTT packets encapsulated in TCP packets.  This allows 
     the MQTT_Stream class to work right.
-    see: http://stackoverflow.com/questions/8073508/scapy-adding-new-protocol-\
+    see: http://stackoverflow.com/questions/8073508/kamene-adding-new-protocol-\
     with-complex-field-groupings
 
 """
